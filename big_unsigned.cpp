@@ -33,43 +33,6 @@ uint32_t lo(uint64_t n) {
 	return (uint32_t) (n & hi(UINT64_MAX));
 }
 
-/*
-Multiplicative Carry Computation
-
-1234 * 5678 = (1200 + 0034)*(5600 + 0078);
-= 12 * 56 * 10000 + 12 * 78 * 100 + 34 * 56 * 100 + 34 * 78 
-  --------          --------        --------        -------- 
-  no carry          no carry        no carry        no carry 
-= 0672 * 10000 + 0936 * 100 + 1904 * 100 + 2652
-  ----           ----         ----         ----
-  p3             p2           p1           p0
-where
-	p3 = hi(1234) * hi(5678)         
-	p2 = hi(1234) * lo(5678)
-	p1 = lo(1234) * hi(5678)
-	p0 = lo(1234) * lo(5678)
-
-= 0672 * 10000 + (0900 + 36) * 100 + (1900 + 04) * 100 + (2600 + 52)
-= 0672 * 10000 + 09 * 10000 + 36 * 100 + 19 * 10000 + 04 * 100 + 26 * 100 + 52
-= (0672 + 09 + 19) * 10000 + (36 + 04 + 26) * 100 + 52
-
-= (p3 + hi(p2) + hi(p1)) * 10000
- +(lo(p2) + lo(p1) + hi(p0)) * 100
- +lo(p0)
-
-the carry is therefore
-(p3 + hi(p2) + hi(p1))
-*/
-
-uint64_t mul_carry(uint64_t a, uint64_t b) {
-	uint64_t hi_a = hi(a);
-	uint64_t hi_b = hi(b);
-	uint64_t p3 = hi_a * hi_b;
-	uint64_t p2 = hi_a * lo(b);
-	uint64_t p1 = hi_b * lo(a);
-	return p3 + hi(p2) + hi(p1);
-}
-
 // https://stackoverflow.com/a/5100745/4425924
 template< typename T >
 std::string int_to_hex( T i )
